@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const resp = await fetch(new URL('/api/auth/me', Astro.request.url), {
+  headers: Astro.request.headers,
+});
+const isAuthenticated = resp.status !== 401;
+---
+
+<Layout title="Email Server">
+  <main class="flex min-h-screen items-center justify-center bg-gray-50">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-gray-900">Welcome to Email Server</h1>
+      <p class="mt-4 text-lg text-gray-600">Your self-hosted email platform</p>
+
+      <div class="mt-8 flex items-center justify-center gap-4">
+        {isAuthenticated ? (
+          <>
+            <a
+              href="/inbox"
+              class="rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Inbox
+            </a>
+            <a
+              href="/domains"
+              class="rounded-md bg-white px-6 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50"
+            >
+              Domain Management
+            </a>
+          </>
+        ) : (
+          <>
+            <a
+              href="/signin"
+              class="rounded-md bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Sign In
+            </a>
+            <a
+              href="/signup"
+              class="rounded-md bg-white px-6 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50"
+            >
+              Sign Up
+            </a>
+            <a
+              href="/domains"
+              class="rounded-md bg-white px-6 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50"
+            >
+              Domain Management
+            </a>
+          </>
+        )}
+      </div>
+    </div>
+  </main>
+</Layout>

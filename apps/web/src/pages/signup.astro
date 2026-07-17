@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SignUp } from '../components/auth/SignUp';
+---
+
+<Layout title="Sign Up - Email Server">
+  <div class="flex items-center justify-center min-h-[80vh]">
+    <SignUp client:load />
+  </div>
+</Layout>

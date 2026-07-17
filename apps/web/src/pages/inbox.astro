@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InboxShell from '../components/InboxShell';
+
+const resp = await fetch(new URL('/api/auth/me', Astro.request.url), {
+  headers: Astro.request.headers,
+});
+
+if (resp.status === 401) {
+  return Astro.redirect('/signin');
+}
+---
+
+<Layout title="Inbox">
+  <InboxShell client:load />
+</Layout>

@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SignIn } from '../components/auth/SignIn';
+---
+
+<Layout title="Sign In - Email Server">
+  <div class="flex items-center justify-center min-h-[80vh]">
+    <SignIn client:load />
+  </div>
+</Layout>

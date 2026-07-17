@@ -1,0 +1,45 @@
+{
+  "name": "email-server",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": "./dist",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "email-db",
+      "database_id": "email-db",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOBS",
+      "bucket_name": "email-blobs"
+    }
+  ],
+  "send_email": [
+    {
+      "name": "EMAIL"
+    }
+  ],
+  "vars": {
+    "BETTER_AUTH_SECRET": "dev-secret-64-chars-minimum-length-for-better-auth-encryption-key--12345678"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "USER_HUB",
+        "class_name": "UserHub"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["UserHub"]
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

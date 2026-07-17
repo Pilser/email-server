@@ -1,0 +1,32 @@
+# Whitelist: ignore everything, include only what's needed
+*
+
+# Root files
+!/.gitignore
+!/package.json
+!/AGENTS.md
+!/PLAN.md
+!/TEST_DOC.md
+
+# App source
+!/apps
+!/apps/web
+!/apps/web/src
+!/apps/web/src/**
+!/apps/web/drizzle
+!/apps/web/drizzle/**
+!/apps/web/public
+!/apps/web/public/**
+!/apps/web/package.json
+!/apps/web/tsconfig.json
+!/apps/web/astro.config.mjs
+!/apps/web/wrangler.jsonc
+!/apps/web/drizzle.config.ts
+
+# Shared packages
+!/packages
+!/packages/shared
+!/packages/shared/src
+!/packages/shared/src/**
+!/packages/shared/package.json
+!/packages/shared/tsconfig.json

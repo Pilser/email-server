@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "email-server",
+  "packageManager": "bun@1.2.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "bun run --filter @email/web dev",
+    "build": "bun run --filter @email/web build",
+    "deploy": "bun run build && cd apps/web && bunx wrangler deploy",
+    "db:generate": "bun run --filter @email/web db:generate",
+    "db:migrate": "bun run --filter @email/web db:migrate"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}
