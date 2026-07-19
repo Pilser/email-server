@@ -87,6 +87,14 @@ export default function InboxShell() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<{ threads: Thread[]; messages: Message[] } | null>(null)
   const [searching, setSearching] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => setIsAdmin(data.user?.role === "admin"))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (!searchQuery || searchQuery.length < 2) {
@@ -322,6 +330,7 @@ export default function InboxShell() {
         mailboxes={mailboxes}
         mailboxId={mailboxId}
         view={view}
+        isAdmin={isAdmin}
         onSelectMailbox={(id) => {
           setMailboxId(id)
           setThreadId(null)

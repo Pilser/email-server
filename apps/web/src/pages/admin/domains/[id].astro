@@ -1,0 +1,84 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import DomainStatusBadge from '../../../components/DomainStatusBadge';
+import SetupWizard from '../../../components/SetupWizard';
+
+const { id } = Astro.params;
+
+const meResp = await fetch(new URL('/api/auth/me', Astro.request.url), { headers: Astro.request.headers });
+if (meResp.status === 401) return Astro.redirect('/signin');
+const { user } = await meResp.json();
+if (user.role !== 'admin') return Astro.redirect('/inbox');
+
+const domainResp = await fetch(new URL(`/api/admin/domains/${id}`, Astro.request.url), { headers: Astro.request.headers });
+if (domainResp.status === 404) return Astro.redirect('/admin/domains');
+const domain = await domainResp.json();
+
+const mailboxesResp = await fetch(new URL('/api/mailboxes', Astro.request.url), { headers: Astro.request.headers });
+let domainMailboxes: any[] = [];
+if (mailboxesResp.ok) {
+  const allMailboxes = await mailboxesResp.json();
+  domainMailboxes = (allMailboxes.mailboxes || []).filter((m: any) => m.domainId === id);
+}
+---
+
+<AdminLayout title={domain.name}>
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <nav class="mb-6 text-sm text-gray-500">
+      <a href="/admin/domains" class="hover:text-gray-700">&larr; Domains</a>
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <h1 class="text-2xl font-bold text-gray-900">{domain.name}</h1>
+      <DomainStatusBadge status={domain.status} />
+      {domain.mxVerified ? (
+        <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">MX Verified</span>
+      ) : (
+        <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">MX Not Verified</span>
+      )}
+    </div>
+
+    <div class="mt-8 grid gap-8 lg:grid-cols-2">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">DNS Setup</h2>
+        <p class="mt-1 text-sm text-gray-500">Verify DNS records and run auto-configuration.</p>
+        <div class="mt-4">
+          <SetupWizard client:load domainId={id} domainStatus={domain.status} />
+        </div>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Mailboxes</h2>
+        <p class="mt-1 text-sm text-gray-500">Mailboxes associated with this domain.</p>
+        <div class="mt-4 space-y-2">
+          {domainMailboxes.length === 0 && (
+            <p class="rounded-lg border border-gray-200 p-4 text-sm text-gray-500">No mailboxes for this domain yet.</p>
+          )}
+          {domainMailboxes.map((mb: any) => (
+            <div key={mb.id} class="rounded-lg border border-gray-200 p-3 text-sm">
+              <span class="font-medium text-gray-900">{mb.address}</span>
+              {mb.displayName && <span class="ml-2 text-gray-500">&mdash; {mb.displayName}</span>}
+              <span class="ml-2 text-gray-400">({mb.type})</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 rounded-lg border border-red-200 bg-red-50 p-4">
+      <h3 class="text-sm font-semibold text-red-800">Danger Zone</h3>
+      <p class="mt-1 text-sm text-red-600">Deleting this domain will prevent email delivery. Ensure no mailboxes are attached.</p>
+      <button id="deleteBtn" class="mt-3 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Delete Domain</button>
+    </div>
+  </div>
+
+  <script>
+    const deleteBtn = document.getElementById('deleteBtn') as HTMLButtonElement;
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete this domain?')) return;
+      const res = await fetch(window.location.pathname.replace('/admin/domains', '/api/admin/domains'), { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) { alert(data.error || 'Failed to delete domain'); return; }
+      window.location.href = '/admin/domains';
+    });
+  </script>
+</AdminLayout>

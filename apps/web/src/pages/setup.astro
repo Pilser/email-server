@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SetupAdmin } from '../components/auth/SetupAdmin';
+import { AdminSignIn } from '../components/auth/AdminSignIn';
+
+let isAuth = false;
+let user: any = null;
+try {
+  const meResp = await fetch(new URL('/api/auth/me', Astro.request.url), { headers: Astro.request.headers });
+  isAuth = meResp.status === 200;
+  if (isAuth) user = (await meResp.json()).user;
+} catch { /* not authenticated */ }
+
+if (isAuth) {
+  if (user?.role === 'admin') return Astro.redirect('/admin');
+  return Astro.redirect('/inbox');
+}
+
+let adminExists = false;
+try {
+  const adminCheck = await fetch(new URL('/api/auth/admin-exists', Astro.request.url), {
+    headers: Astro.request.headers,
+  });
+  const data = await adminCheck.json();
+  adminExists = data?.exists === true;
+} catch {
+  // DB might not be ready — assume fresh setup
+}
+---
+
+<Layout title="Setup — Email Server">
+  <div class="flex items-center justify-center min-h-[80vh]">
+    {adminExists ? <AdminSignIn client:load /> : <SetupAdmin client:load />}
+  </div>
+</Layout>

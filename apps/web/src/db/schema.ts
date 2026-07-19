@@ -75,15 +75,22 @@ export const verification = sqliteTable('verification', {
 
 // ── Domain ──────────────────────────────────────────────────────
 
-export const domain = sqliteTable('domain', {
-  id: id(),
-  name: text('name').notNull().unique(),
-  status: text('status').notNull().default('active'),
-  mxVerified: booleanCol('mx_verified').notNull().default(false),
-  cfZoneId: text('cf_zone_id'),
-  senderProvider: text('sender_provider').notNull().default('cf'),
-  createdAt: createdAt(),
-});
+export const domain = sqliteTable(
+  'domain',
+  {
+    id: id(),
+    name: text('name').notNull().unique(),
+    status: text('status').notNull().default('active'),
+    mxVerified: booleanCol('mx_verified').notNull().default(false),
+    cfZoneId: text('cf_zone_id'),
+    senderProvider: text('sender_provider').notNull().default('cf'),
+    ownerId: text('owner_id').references(() => user.id),
+    createdAt: createdAt(),
+  },
+  (table) => ({
+    ownerIdx: index('idx_domain_owner').on(table.ownerId),
+  }),
+);
 
 // ── Mailbox ─────────────────────────────────────────────────────
 

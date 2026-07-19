@@ -30,7 +30,7 @@ export default function SetupWizard({
     setCheckingDns(true);
     setError(null);
     try {
-      const res = await fetch(`/api/domains/${domainId}/check-dns`, {
+      const res = await fetch(`/api/admin/domains/${domainId}/check-dns`, {
         method: 'POST',
       });
       if (!res.ok) {
@@ -52,7 +52,7 @@ export default function SetupWizard({
     setSteps([]);
     setError(null);
     try {
-      const res = await fetch(`/api/domains/${domainId}/setup`, {
+      const res = await fetch(`/api/admin/domains/${domainId}/setup`, {
         method: 'POST',
       });
       if (!res.ok) {

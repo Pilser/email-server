@@ -1,0 +1,56 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import DomainStatusBadge from '../../../components/DomainStatusBadge';
+
+const meResp = await fetch(new URL('/api/auth/me', Astro.request.url), { headers: Astro.request.headers });
+if (meResp.status === 401) return Astro.redirect('/signin');
+const { user } = await meResp.json();
+if (user.role !== 'admin') return Astro.redirect('/inbox');
+
+const resp = await fetch(new URL('/api/admin/domains', Astro.request.url), { headers: Astro.request.headers });
+const { domains } = await resp.json();
+---
+
+<AdminLayout title="Domain Management">
+  <div class="mx-auto max-w-5xl px-4 py-8">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900">Domains</h1>
+      <a href="/admin/domains/new" class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">Add Domain</a>
+    </div>
+    <div class="mt-6 overflow-hidden rounded-lg border border-gray-200">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Domain</th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">MX Verified</th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+          {domains.length === 0 && (
+            <tr>
+              <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">
+                No domains yet. <a href="/admin/domains/new" class="ml-1 text-blue-600 hover:underline">Add your first domain</a>
+              </td>
+            </tr>
+          )}
+          {domains.map((domain: any) => (
+            <tr key={domain.id} class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                <a href={`/admin/domains/${domain.id}`} class="hover:underline">{domain.name}</a>
+              </td>
+              <td class="px-6 py-4"><DomainStatusBadge status={domain.status} /></td>
+              <td class="px-6 py-4 text-sm text-gray-500">
+                {domain.mxVerified ? <span class="text-green-600">Verified</span> : <span class="text-yellow-600">Not verified</span>}
+              </td>
+              <td class="px-6 py-4 text-sm">
+                <a href={`/admin/domains/${domain.id}`} class="text-blue-600 hover:underline">Manage</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AdminLayout>

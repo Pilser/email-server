@@ -7,6 +7,7 @@ export interface Env {
   BETTER_AUTH_SECRET: string;
   ASSETS: Fetcher;
   CLOUDFLARE_API_TOKEN: string;
+  ADMIN_EMAIL: string;
   USER_HUB: DurableObjectNamespace;
 }
 

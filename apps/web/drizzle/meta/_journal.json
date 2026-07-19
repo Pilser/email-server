@@ -8,6 +8,13 @@
       "when": 1784299238198,
       "tag": "0000_naive_skrulls",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1784299238199,
+      "tag": "0001_add_domain_owner",
+      "breakpoints": true
     }
   ]
 }

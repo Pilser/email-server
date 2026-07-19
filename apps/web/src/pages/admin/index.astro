@@ -1,0 +1,26 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const meResp = await fetch(new URL('/api/auth/me', Astro.request.url), { headers: Astro.request.headers });
+if (meResp.status === 401) return Astro.redirect('/signin');
+const { user } = await meResp.json();
+if (user.role !== 'admin') return Astro.redirect('/inbox');
+---
+
+<AdminLayout title="Admin Dashboard">
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+    <p class="mt-1 text-sm text-gray-500">Welcome, {user.name}.</p>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+      <a href="/admin/domains" class="rounded-lg border border-gray-200 p-6 hover:border-blue-300 hover:shadow-sm">
+        <h2 class="text-lg font-semibold text-gray-900">Domains</h2>
+        <p class="mt-1 text-sm text-gray-500">Register, verify, and manage email domains.</p>
+      </a>
+      <a href="/admin/users" class="rounded-lg border border-gray-200 p-6 hover:border-blue-300 hover:shadow-sm">
+        <h2 class="text-lg font-semibold text-gray-900">Users</h2>
+        <p class="mt-1 text-sm text-gray-500">Manage users and their mailboxes.</p>
+      </a>
+    </div>
+  </div>
+</AdminLayout>

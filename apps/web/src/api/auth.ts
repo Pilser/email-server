@@ -13,6 +13,14 @@ export function createAuth(env: Env) {
     emailAndPassword: {
       enabled: true,
     },
+    user: {
+      additionalFields: {
+        role: {
+          type: 'string',
+          defaultValue: 'user',
+        },
+      },
+    },
     secret: env.BETTER_AUTH_SECRET,
   });
 }

@@ -30,6 +30,7 @@ interface SidebarProps {
   mailboxes: Mailbox[]
   mailboxId: string | null
   view: string
+  isAdmin: boolean
   onSelectMailbox: (id: string) => void
   onSelectView: (view: string) => void
   onCompose: () => void
@@ -40,6 +41,7 @@ export function Sidebar({
   mailboxes,
   mailboxId,
   view,
+  isAdmin,
   onSelectMailbox,
   onSelectView,
   onCompose,
@@ -105,15 +107,17 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className="border-t border-gray-200 p-2">
-        <a
-          href="/domains"
-          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          <SettingsIcon size={16} />
-          Settings
-        </a>
-      </div>
+      {isAdmin && (
+        <div className="border-t border-gray-200 p-2">
+          <a
+            href="/admin"
+            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-200"
+          >
+            <SettingsIcon size={16} />
+            Settings
+          </a>
+        </div>
+      )}
     </aside>
   )
 }

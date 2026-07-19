@@ -23,7 +23,8 @@
     }
   ],
   "vars": {
-    "BETTER_AUTH_SECRET": "dev-secret-64-chars-minimum-length-for-better-auth-encryption-key--12345678"
+    "BETTER_AUTH_SECRET": "dev-secret-64-chars-minimum-length-for-better-auth-encryption-key--12345678",
+    "ADMIN_EMAIL": "admin@example.com"
   },
   "durable_objects": {
     "bindings": [
